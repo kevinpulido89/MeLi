@@ -1,4 +1,5 @@
-""" This script is used to gather data from MercadoLibre API and store it in a database. """
+"""This script is used to gather data from MercadoLibre API and storeit in a
++database."""
 
 import pandas as pd
 
@@ -7,7 +8,8 @@ from src.libs import DatabaseHandler, read_config_from_file
 
 
 def main(config: dict) -> None:
-    """Main function to gather data from MercadoLibre API and store it in a database."""
+    """Main function to gather data from MercadoLibre API and store it in a
+    +    database."""
     _country = config["country"]
 
     meli = MercadoLibreItems(Country(country=_country))

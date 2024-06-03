@@ -1,4 +1,4 @@
-""" Dummy file to test the GHA"""
+"""Dummy file to test the GHA."""
 
 import pandas as pd
 

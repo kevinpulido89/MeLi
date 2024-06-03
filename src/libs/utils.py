@@ -1,4 +1,4 @@
-"""Contains helper functions that can be used in any process """
+"""Contains helper functions that can be used in any process."""
 
 import json
 import os
@@ -6,8 +6,7 @@ import sqlite3
 
 
 def sanitize_file_path(file_path: str) -> str:
-    """
-    Sanitize the given file path to prevent directory traversal attacks.
+    """Sanitize the given file path to prevent directory traversal attacks.
 
     Args:
     - file_path (str): The original file path.
@@ -18,6 +17,7 @@ def sanitize_file_path(file_path: str) -> str:
 
     Raises:
     - ValueError: If the file_path is deemed unsafe.
+
     """
     # Get the absolute path of the allowed directory
     allowed_directory = os.path.abspath(os.getcwd())
@@ -33,8 +33,7 @@ def sanitize_file_path(file_path: str) -> str:
 
 
 def read_config_from_file(file_path: str) -> dict:
-    """
-    Read configuration from a JSON file.
+    """Read configuration from a JSON file.
 
     Args:
     - file_path (str): The path to the JSON file.
@@ -46,6 +45,7 @@ def read_config_from_file(file_path: str) -> dict:
     - FileNotFoundError: If the specified file_path does not exist.
     - json.JSONDecodeError: If there is an issue decoding the JSON content.
     - ValueError: If the file_path is deemed unsafe.
+
     """
     sanitized_path = sanitize_file_path(file_path)
 

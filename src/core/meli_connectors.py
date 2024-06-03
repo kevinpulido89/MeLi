@@ -1,4 +1,5 @@
-""" This module contains the classes to connect to MercadoLibre API and gather data from it."""
+"""This module contains the classes to connect to MercadoLibre API and gather
++data from it."""
 
 import pandas as pd
 from httpx import Client
@@ -10,8 +11,8 @@ log = logger.opt(colors=True)
 
 
 class MercadoLibreItems:
-    """This class is used to request the MercadoLibre API by country and
-    gather all the products from all categories."""
+    """This class is used to request the MercadoLibre API by country and gather
+    +    all the products from all categories."""
 
     def __init__(self, country: Country):
         self._country = str(country.country)
@@ -75,8 +76,8 @@ class MercadoLibreItems:
 
 
 class MercadoLibreUniverse:
-    """This class is used to request the MercadoLibre API and gather all
-    the categories from all countries."""
+    """This class is used to request the MercadoLibre API and gather all the
+    +    categories from all countries."""
 
     def __init__(self):
         self.client = Client(base_url="https://api.mercadolibre.com/")
