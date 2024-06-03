@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, synchronize, reopened]
 
 jobs:
     validations:
@@ -16,8 +16,8 @@ jobs:
               with:
                 python-version: '3.11'
 
-            -  name: Install requirements
-               run: pip install -r requirements-dev.txt
+            - name: Install requirements
+              run: pip install -r requirements-dev.txt
 
             # get modified files from pull request
             - name: Changed Files in PR
