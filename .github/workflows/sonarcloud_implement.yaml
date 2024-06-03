@@ -1,4 +1,4 @@
-name: Run SonarCloud
+name: CI - SonarCloud report
 on:
   push:
     branches:
