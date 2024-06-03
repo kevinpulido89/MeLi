@@ -4,13 +4,6 @@ on:
   pull_request:
     types: [opened, reopened]
 
-  workflow_call:
-    inputs:
-      # input parameter to define project directory
-      pyProjectDirectory:
-        default: "pyproject.toml"
-        required: false
-        type: string
 jobs:
     validations:
         runs-on: ubuntu-latest
@@ -46,12 +39,12 @@ jobs:
 
             # run black formatter
             - name: Run Black
-              run: black --check --config src/ ${{ steps.changed_files.outputs.files }}
+              run: black --check --config pyproject.toml ${{ steps.changed_files.outputs.files }}
 
             # run isort validator
             - name: Run Isort
-              run: isort --check-only --sp ${{ inputs.pyProjectDirectory }} --color --diff ${{ steps.changed_files.outputs.files }}
+              run: isort --check-only --sp pyproject.toml --color --diff ${{ steps.changed_files.outputs.files }}
 
             # run docformatter validator
             - name: Run Docformatter
-              run: docformatter --config ${{ inputs.pyProjectDirectory }} --exclude venv conda-env --recursive --check ${{ steps.changed_files.outputs.files }}
+              run: docformatter --config pyproject.toml --exclude venv conda-env --recursive --check ${{ steps.changed_files.outputs.files }}
