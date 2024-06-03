@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, reopened]
+
+  workflow_call:
+    inputs:
+      # input parameter to define project directory
+      pyProjectDirectory:
+        default: "pyproject.toml"
+        required: false
+        type: string
+jobs:
+    validations:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up Python 3.11
+              uses: actions/setup-python@v5
+              with:
+                python-version: '3.11'
+
+            -  name: Install requirements
+               run: pip install -r requirements-dev.txt
+
+            # get modified files from pull request
+            - name: Changed Files in PR
+              id: changed_files
+              run: |
+                set +e
+                changed_files=$(git diff --diff-filter=d --name-only $(git merge-base HEAD origin/main) HEAD | grep ".*\.py$")
+                if [ ! -z "$changed_files" ];
+                then
+                  changed_files=$(echo $changed_files | tr '\n' ' ')
+                  echo "files=$changed_files" >> "$GITHUB_OUTPUT"
+                else
+                  echo "Warning: No files to check"
+                  echo "files=0" >> "$GITHUB_OUTPUT"
+                  exit 0
+                fi
+                echo "number of files: $(echo $changed_files | wc -w)"
+              shell: bash
+
+            # run black formatter
+            - name: Run Black
+              run: black --check --config src/ ${{ steps.changed_files.outputs.files }}
+
+            # run isort validator
+            - name: Run Isort
+              run: isort --check-only --sp ${{ inputs.pyProjectDirectory }} --color --diff ${{ steps.changed_files.outputs.files }}
+
+            # run docformatter validator
+            - name: Run Docformatter
+              run: docformatter --config ${{ inputs.pyProjectDirectory }} --exclude venv conda-env --recursive --check ${{ steps.changed_files.outputs.files }}
