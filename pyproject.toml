@@ -1,0 +1,29 @@
+# Lint: black configuration parameters
+[tool.black]
+line-length = 100
+include = '\.pyi?$'
+extend-exclude = '''__init__.py'''
+
+# Lint: isort configuration parameters
+[tool.isort]
+profile = "black"
+
+# Lint: docformatter configuration parameters
+[tool.docformatter]
+recursive = true
+wrap-summaries = 80
+wrap-descriptions = 80
+blank = true
+
+# Lint: pylint configuration parameters
+[tool.pylint]
+enable = "W"
+ignore-paths = [
+    "^src/venv/.*$",
+    "^test/.*$",
+]
+fail-on = "E,F,W,C,R"
+fail-under = 8.2
+recursive = "n"
+max-line-length = 100
+disable = "E0401,W0221,R0903"
