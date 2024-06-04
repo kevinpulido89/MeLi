@@ -1,0 +1,29 @@
+repos:
+  # black is a code formatter in Python. Using this mirror lets us use mypyc-compiled black, which is about 2x faster
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 24.4.2
+    hooks:
+      - id: black
+        # https://pre-commit.com/#top_level-default_language_version
+        language_version: python3.11
+
+  # isort sorts imported libraries alphabetically
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--sp", "pyproject.toml"]
+
+  # docformatter formats docstrings
+  - repo: https://github.com/PyCQA/docformatter
+    rev: v1.7.5
+    hooks:
+      - id: docformatter
+        args: ["--config", "pyproject.toml"]
+
+  # interrogate checks the codebase for missing docstrings
+  - repo: https://github.com/econchick/interrogate
+    rev: 1.7.0
+    hooks:
+      - id: interrogate
+        args: ["--config", "pyproject.toml"]

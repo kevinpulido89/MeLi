@@ -1,9 +1,13 @@
+"""This module contains the base models for the application."""
+
 from typing import Literal
 
 from pydantic import BaseModel
 
 
 class Country(BaseModel):
+    """This class represents a country object."""
+
     country: Literal[
         "Chile",
         "Ecuador",

@@ -1,3 +1,5 @@
-docformatter
-black
-isort[colors]
+docformatter==1.7.5
+black==24.4.2
+isort[colors]==5.13.2
+interrogate==1.7.0
+pre-commit==3.7.1
