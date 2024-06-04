@@ -1,3 +1,4 @@
 docformatter
 black
 isort[colors]
+interrogate
