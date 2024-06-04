@@ -50,3 +50,7 @@ jobs:
             # run docformatter validator
             - name: Run Docformatter
               run: docformatter --config pyproject.toml --exclude venv conda-env --recursive --check ${{ steps.changed_files.outputs.files }}
+
+            # run docstrings min percentage validator
+            - name: Run Interrogate
+              run: interrogate --config pyproject.toml ${{ steps.changed_files.outputs.files }}
