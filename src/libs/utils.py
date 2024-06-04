@@ -3,6 +3,7 @@
 import json
 import os
 import sqlite3
+from typing import Any, Self
 
 
 def sanitize_file_path(file_path: str) -> str:
@@ -67,31 +68,72 @@ class DatabaseHandler:
     """A class to handle database operations."""
 
     def __init__(self, db_name: str):
+        """Initialize the DatabaseHandler object."""
         self.db_name = db_name
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
+        """Enter the context manager.
+
+        Returns:
+            Self: The current instance.
+
+        """
         self.connect_to_db()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """Exit the context manager.
+
+        Args:
+            exc_type: The type of the exception.
+            exc_val: The exception value.
+            exc_tb: The exception traceback.
+
+        """
         self.close_connection()
 
     def connect_to_db(self):
+        """Connect to the database."""
         self.cnx = sqlite3.connect(self.db_name)
         self.cur = self.cnx.cursor()
 
-    def get_table_names(self):
+    def get_table_names(self) -> list[Any]:
+        """Get the names of the tables in the database.
+
+        Returns:
+            list[Any]: The names of the tables in the database.
+
+        """
         query = "SELECT name FROM sqlite_master WHERE type='table';"
         return [table[0] for table in self.cur.execute(query).fetchall()]
 
-    def get_table_columns(self, table_name: str):
+    def get_table_columns(self, table_name: str) -> list[Any]:
+        """Get the columns of the specified table.
+
+        Args:
+            table_name (str): The name of the table.
+
+        Returns:
+            list[Any]: The columns of the specified table.
+
+        """
         query = f"PRAGMA table_info({table_name});"
         return [column[1] for column in self.cur.execute(query).fetchall()]
 
-    def get_table_data(self, table_name: str):
+    def get_table_data(self, table_name: str) -> list[Any]:
+        """Get the data from the specified table.
+
+        Args:
+            table_name (str): The name of the table.
+
+        Returns:
+            list[Any]: The data from the specified table.
+
+        """
         query = f"SELECT * FROM {table_name};"
         return self.cur.execute(query).fetchall()
 
     def close_connection(self):
+        """Close the connection to the database and the cursor."""
         self.cur.close()
         self.cnx.close()

@@ -1,5 +1,5 @@
 """This module contains the classes to connect to MercadoLibre API and gather
-+data from it."""
+data from it."""
 
 import pandas as pd
 from httpx import Client
@@ -15,6 +15,12 @@ class MercadoLibreItems:
     +    all the products from all categories."""
 
     def __init__(self, country: Country):
+        """This method initializes the class.
+
+        Args:
+            country (Country): Country object.
+
+        """
         self._country = str(country.country)
 
         self.client = Client(base_url="https://api.mercadolibre.com/")
@@ -23,15 +29,35 @@ class MercadoLibreItems:
 
     @property
     def country(self):
+        """Property: This method returns the country."""
         return self._country
 
     @country.setter
     def country(self, value: Country):
+        """This method sets the country and updates the country id and
+        categories.
+
+        Args:
+            value (Country): Country object.
+
+        """
         self._country = str(value.country)
         self.country_id = self.get_country_id(self._country)
         self.cats = self.get_categories_given_country_id(self.country_id)
 
     def get_country_id(self, country: str) -> str:
+        """This method returns the country id given the country name.
+
+        Args:
+            country (str): Country name.
+
+        Returns:
+            str: Country id.
+
+        Raises:
+            ValueError: If the country is not found.
+
+        """
         response = self.client.get("sites").json()
         for site in response:
             if site["name"] == country:
@@ -39,13 +65,50 @@ class MercadoLibreItems:
         raise ValueError("Country not found")
 
     def get_categories_given_country_id(self, country_id: str) -> dict:
+        """This method returns the categories given the country id.
+
+        Args:
+            country_id (str): Country id.
+
+        Returns:
+            dict: Categories from the country.
+
+        """
         return self.client.get(f"sites/{country_id}/categories").json()
 
-    def get_categories(self):
+    def get_categories(self) -> dict:
+        """This method returns the categories from the country.
+
+        Returns:
+            dict: Categories from the country.
+
+        """
         self.cats = self.client.get(f"sites/{self.country_id}/categories").json()
         return self.cats
 
+    def get_product_description(self, item_id: str) -> dict:
+        """This method returns the description of a product given the item id.
+
+        Args:
+            item_id (str): Item id.
+
+        Returns:
+            dict: Description of the product.
+
+        """
+        return self.client.get(f"items/{item_id}/description").json()
+
     def get_products_by_category(self, category_id: str, limit: int = 1000) -> pd.DataFrame:
+        """This method returns all the products from a category.
+
+        Args:
+            category_id (str): Category id.
+            limit (int, optional): Number of products to retrieve. Defaults to 1000.
+
+        Returns:
+            pd.DataFrame: DataFrame with all the products from the category.
+
+        """
         all_category_products = pd.DataFrame()
 
         for off in range(0, limit, 50):
@@ -60,6 +123,16 @@ class MercadoLibreItems:
         return all_category_products
 
     def gell_all_country_products(self, limit: int = 1000) -> pd.DataFrame:
+        """This method returns all the products from all categories in the
+        country.
+
+        Args:
+            limit (int, optional): Number of products to retrieve. Defaults to 1000.
+
+        Returns:
+            pd.DataFrame: DataFrame with all the products from all categories.
+
+        """
         all_country_products = pd.DataFrame()
         for category in self.cats:
             all_country_products = pd.concat(
@@ -77,20 +150,38 @@ class MercadoLibreItems:
 
 class MercadoLibreUniverse:
     """This class is used to request the MercadoLibre API and gather all the
-    +    categories from all countries."""
+    categories from all countries."""
 
     def __init__(self):
+        """This method initializes the class."""
         self.client = Client(base_url="https://api.mercadolibre.com/")
 
     def get_categories_given_country_id(self, country_id: str) -> dict:
+        """This method returns the categories given the country id.
+
+        Args:
+            country_id (str): Country id.
+
+        Returns:
+            dict: Categories from the country.
+
+        """
         return self.client.get(f"sites/{country_id}/categories").json()
 
     def gather_countries_info(self):
+        """This method gathers the countries information from the API and
+        creates a DataFrame with it."""
         self.countries_details = self.client.get("/sites/").json()
         self.countries = [country["name"] for country in self.countries_details]
         self.df_countries_details = pd.DataFrame(self.countries_details)
 
     def get_all_categories_from_all_countries(self) -> pd.DataFrame:
+        """This method returns all the categories from all countries.
+
+        Returns:
+            pd.DataFrame: DataFrame with all the categories from all countries.
+
+        """
         self.gather_countries_info()
 
         all_universe_cats = pd.DataFrame()
