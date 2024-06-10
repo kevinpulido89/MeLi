@@ -5,7 +5,7 @@ import pandas as pd
 from httpx import Client
 from loguru import logger
 
-from src.core import Country
+from core import Country
 
 log = logger.opt(colors=True)
 
