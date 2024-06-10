@@ -1,19 +1,22 @@
 """This script is used to gather data from MercadoLibre API and storeit in a
-+database."""
+database."""
 
 import pandas as pd
 
-from src.core import Country, MercadoLibreItems, MercadoLibreUniverse
-from src.libs import DatabaseHandler, read_config_from_file
+from core import Country, MercadoLibreItems, MercadoLibreUniverse
+from libs import DatabaseHandler, read_config_from_file
 
 
 def main(config: dict) -> None:
     """Main function to gather data from MercadoLibre API and store it in a
-    +    database."""
+    database."""
     _country = config["country"]
 
     meli = MercadoLibreItems(Country(country=_country))
     country_products = meli.gell_all_country_products()
+    country_products["description"] = country_products["id"].apply(
+        lambda x: meli.get_product_description(x)
+    )
 
     country_products = country_products.filter(
         ["id", "title", "price", "permalink", "condition", "available_quantity"]
@@ -29,10 +32,10 @@ def main(config: dict) -> None:
         print("Data has been stored in the database.")
 
         print(db.get_table_names())
-        print(db.get_table_columns("country_products_Bolivia"))
+        print(db.get_table_columns(f"country_products_{_country}"))
         print(db.get_table_columns("categories_universe"))
         print(db.get_table_data("categories_universe"))
-        print(db.get_table_data("country_products_Bolivia"))
+        print(db.get_table_data(f"country_products_{_country}"))
 
         df = pd.read_sql_query("SELECT * FROM categories_universe", db.cnx)
         print(df.head(2))
